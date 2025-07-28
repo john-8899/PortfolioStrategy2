@@ -568,7 +568,7 @@ class PortfolioStrategy:
                                     pruner=optuna.pruners.MedianPruner(n_warmup_steps=5)#剪枝器
                                     )
         # 定义目标函数
-        study.optimize(self.objective, n_trials=100,n_jobs=4)
+        study.optimize(self.objective, n_trials=80,n_jobs=4)
 
         # 获取最佳参数
         best_value = study.best_value
