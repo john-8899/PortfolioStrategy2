@@ -489,10 +489,10 @@ class PortfolioStrategy:
             'top_k':trial.suggest_int('top_k', 2, 5),
             'e_layers':trial.suggest_int('e_layers', 2, 5),
             'freq':trial.suggest_categorical('freq', ['h','d', 'w', 'm']),
-            'dropout':trial.suggest_uniform('dropout', 0.1, 0.5),
+            'dropout':trial.suggest_float('dropout', 0.1, 0.5),
             'batch_size':trial.suggest_categorical('batch_size', [16, 32, 64]),
-            'learning_rate': trial.suggest_loguniform('learning_rate', 1e-5, 1e-2),
-            'weight_decay': trial.suggest_loguniform('weight_decay', 1e-5, 1e-2),
+            'learning_rate': trial.suggest_float('learning_rate', 1e-5, 1e-2, log=True),
+            'weight_decay': trial.suggest_float('weight_decay', 1e-5, 1e-2, log=True),
         }
 
         # 生成训练数据(训练集，测试集,特征数)
@@ -568,7 +568,7 @@ class PortfolioStrategy:
                                     pruner=optuna.pruners.MedianPruner(n_warmup_steps=5)#剪枝器
                                     )
         # 定义目标函数
-        study.optimize(self.objective, n_trials=100,n_jobs=4)
+        study.optimize(self.objective, n_trials=80,n_jobs=2)
 
         # 获取最佳参数
         best_value = study.best_value
