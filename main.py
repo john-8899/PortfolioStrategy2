@@ -30,7 +30,8 @@ from collections import Counter
 from tqdm import tqdm
 from Autoformer import Autoformer
 from TimeMixer import TimeMixer
-from Configs import TimeMixer_Configs,TimesNet_configs
+from Nonstationary_Transformer import Nonstationary_Transformer
+from Configs import TimeMixer_Configs,TimesNet_configs,Nonstationary_configs
 from TimesNet import CTimesNet
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
@@ -414,8 +415,12 @@ class PortfolioStrategy:
         # model = TimeMixer(configs)
 
         # TimesNet模型调用
-        configs = TimesNet_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = CTimesNet(configs)
+        # configs = TimesNet_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = CTimesNet(configs)
+
+        # Nonstationary_Transformer模型调用 #序列长度，输入特征数
+        configs = Nonstationary_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = Nonstationary_Transformer(configs)
 
         model = model.to(self.device)
         #设置优化器
