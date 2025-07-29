@@ -103,19 +103,49 @@ class Nonstationary_configs:
         self.seq_len = seq_len # 输入序列长度
         self.enc_in = enc_in # 输入特征维度(特征数)
 
-        #TimesBlock模块：使用FFT提取周期特征并通过2D卷积处理 卷积层参数(in_channels, out_channels, num_kernels)
-        self.d_model = 128 # 模型隐藏层维度 512 d_model=in_channels
+        self.d_model = 512 # 模型隐藏层维度 512 d_model=in_channels
         self.d_ff = 256 # d_ff = (out_channels)
         self.num_kernels = 3 #num_kernels
-        self.top_k = 3 # 快速傅里叶变换(FFT)
+
+        self.e_layers = 2 # 编码器层数
+
+        self.factor = 5 # 注意力机制参数
+        self.n_heads = 8
+        self.activation = 'relu'
+        self.p_hidden_dims = [128,128] # MLP隐藏层维度
+        self.p_hidden_layers = 2  # MLP隐藏层数(和上面一个参数配合使用)
+        #嵌入层参数：嵌入类型 timeF, fixed, learned
+        """
+            timeF：时间序列预测、时间特征编码
+            fixed：NLP中的位置编码、图结构编码
+            learned：文本分类、机器翻译、推荐系统等
+        """
+        self.embed = 'timeF'  # 嵌入类型 timeF, fixed, learned
+        self.freq = 'd'  # 时间频率 [s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly]
+
+        self.dropout = 0.1 # dropout
+        self.num_class = 2  # 分类数
+
+class Informer_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.d_model = 512 # 模型隐藏层维度 512 d_model=in_channels
+        self.d_ff = 256 # d_ff = (out_channels)
+        self.num_kernels = 3 #num_kernels
 
         self.e_layers = 3 # 编码器层数
 
         self.factor = 5 # 注意力机制参数
         self.n_heads = 8
         self.activation = 'relu'
-        self.p_hidden_dim = [32,64,128] # MLP隐藏层维度
-        self.p_hidden_layers = 3   # MLP隐藏层数(和上面一个参数配合使用)
+
         #嵌入层参数：嵌入类型 timeF, fixed, learned
         """
             timeF：时间序列预测、时间特征编码

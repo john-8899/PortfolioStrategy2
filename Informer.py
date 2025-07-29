@@ -14,7 +14,6 @@ class Informer(nn.Module):
 
     def __init__(self, configs):
         super(Informer, self).__init__()
-        self.task_name = 'classification'
         self.seq_len = configs.seq_len
         self.num_class = configs.num_class
 
@@ -49,7 +48,7 @@ class Informer(nn.Module):
         self.dropout = nn.Dropout(configs.dropout)
         self.projection = nn.Linear(configs.d_model * configs.seq_len, configs.num_class)
 
-    def forward(self, x_enc, x_mark_enc):
+    def forward(self, x_enc, x_mark_enc=None):
         """
         Forward pass for classification task
 
@@ -69,7 +68,9 @@ class Informer(nn.Module):
         # Output
         output = self.act(enc_out)  # the output transformer encoder/decoder embeddings don't include non-linearity
         output = self.dropout(output)
-        output = output * x_mark_enc.unsqueeze(-1)  # zero-out padding embeddings
+        # 应用掩码（如果提供）
+        if x_mark_enc is not None:
+            output = output * x_mark_enc.unsqueeze(-1)##zero-out padding embeddings
         output = output.reshape(output.shape[0], -1)  # (batch_size, seq_length * d_model)
         output = self.projection(output)  # (batch_size, num_classes)
 
