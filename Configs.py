@@ -136,11 +136,11 @@ class Informer_configs:
         self.seq_len = seq_len # 输入序列长度
         self.enc_in = enc_in # 输入特征维度(特征数)
 
-        self.d_model = 512 # 模型隐藏层维度 512 d_model=in_channels
+        self.d_model = 128 # d_model=in_channels
         self.d_ff = 256 # d_ff = (out_channels)
-        self.num_kernels = 3 #num_kernels
 
         self.e_layers = 3 # 编码器层数
+        self.distil = False #'whether to use distilling in encoder, using this argument means not using distilling
 
         self.factor = 5 # 注意力机制参数
         self.n_heads = 8
