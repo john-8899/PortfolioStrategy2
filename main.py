@@ -31,9 +31,10 @@ from tqdm import tqdm
 from Autoformer import Autoformer
 from TimeMixer import TimeMixer
 from Nonstationary_Transformer import Nonstationary_Transformer
-from Configs import TimeMixer_Configs,TimesNet_configs,Nonstationary_configs,Informer_configs
+from Configs import TimeMixer_Configs,TimesNet_configs,Nonstationary_configs,Informer_configs,Mamba_configs
 from TimesNet import CTimesNet
 from Informer import Informer
+from MambaSimple import MambaModel
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
 import matplotlib.pyplot as plt
@@ -423,9 +424,13 @@ class PortfolioStrategy:
         # configs = Nonstationary_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = Nonstationary_Transformer(configs)
 
-        # Informer模型调用
-        configs = Informer_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = Informer(configs)
+        # # Informer模型调用
+        # configs = Informer_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = Informer(configs)
+
+        # Mamba模型调用
+        configs = Mamba_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = MambaModel(configs)
 
         model = model.to(self.device)
         #设置优化器
