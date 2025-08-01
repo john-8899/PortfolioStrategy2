@@ -31,10 +31,11 @@ from tqdm import tqdm
 from Autoformer import Autoformer
 from TimeMixer import TimeMixer
 from Nonstationary_Transformer import Nonstationary_Transformer
-from Configs import TimeMixer_Configs,TimesNet_configs,Nonstationary_configs,Informer_configs,Mamba_configs
+from Configs import TimeMixer_Configs,TimesNet_configs,Nonstationary_configs,Informer_configs,Mamba_configs,MultiPatchFormer_configs
 from TimesNet import CTimesNet
 from Informer import Informer
 from MambaSimple import MambaModel
+from MultiPatchFormer import MultiPatchFormer
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
 import matplotlib.pyplot as plt
@@ -428,9 +429,13 @@ class PortfolioStrategy:
         # configs = Informer_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = Informer(configs)
 
-        # Mamba模型调用
-        configs = Mamba_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = MambaModel(configs)
+        # # Mamba模型调用
+        # configs = Mamba_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = MambaModel(configs)
+
+        # MultiPatchFormer模型调用
+        configs = MultiPatchFormer_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = MultiPatchFormer(configs)
 
         model = model.to(self.device)
         #设置优化器
@@ -460,7 +465,7 @@ class PortfolioStrategy:
         self.plot_metric(dfhistory, "loss")
 
         #保存模型到SavedModel目录下(保存的是模型的参数)
-        torch.save(model, "SaveModels/GRU_model.pth")
+        #torch.save(model, "SaveModels/GRU_model.pth")
 
 if __name__ == '__main__':
     ps = PortfolioStrategy()
