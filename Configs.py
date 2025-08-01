@@ -168,13 +168,13 @@ class Mamba_configs:
         self.seq_len = seq_len # 输入序列长度
         self.enc_in = enc_in # 输入特征维度(特征数)
 
-        self.d_model = 128 # d_model=in_channels
-        self.d_ff = 256 # d_ff = (out_channels)
+        self.d_model = 64 # d_model=in_channels
+        self.d_ff = 128 # d_ff = (out_channels)
 
         self.expand = 2 #expansion factor for Mamba
         self.d_conv = 3 # conv kernel size for Mamba
 
-        self.e_layers = 3 # 编码器层数
+        self.e_layers = 2 # 编码器层数
 
         #嵌入层参数：嵌入类型 timeF, fixed, learned
         """
@@ -184,6 +184,25 @@ class Mamba_configs:
         """
         self.embed = 'timeF'  # 嵌入类型 timeF, fixed, learned
         self.freq = 'd'  # 时间频率 [s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly]
+
+        self.dropout = 0.1 # dropout
+        self.num_class = 2  # 分类数
+
+class MultiPatchFormer_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.d_model = 64 # d_model=in_channels
+        self.d_ff = 128 # d_ff = (out_channels)
+
+        self.e_layers = 2 # 编码器层数
+        self.n_heads = 8
 
         self.dropout = 0.1 # dropout
         self.num_class = 2  # 分类数
