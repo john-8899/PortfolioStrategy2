@@ -95,11 +95,16 @@ class MultiPatchFormer(nn.Module):
         self.patch_len1 = 8
         self.stride2 = 8
         self.patch_len2 = 16
-        self.stride3 = 7
+        self.stride3 = 8
         self.patch_len3 = 24
-        self.stride4 = 6
+        self.stride4 = 8
         self.patch_len4 = 32
-        self.patch_num1 = int((self.seq_len - self.patch_len2) // self.stride2) + 2
+        #self.patch_num1 = int((self.seq_len - self.patch_len2) // self.stride2) + 2
+        self.patch_num1 = int((self.seq_len - self.patch_len1) // self.stride1) + 1
+        self.patch_num2 = int((self.seq_len - self.patch_len2) // self.stride2) + 1
+        self.patch_num3 = int((self.seq_len - self.patch_len3) // self.stride3) + 1
+        self.patch_num4 = int((self.seq_len - self.patch_len4) // self.stride4) + 1
+
         self.padding_patch_layer1 = nn.ReplicationPad1d((0, self.stride1))
         self.padding_patch_layer2 = nn.ReplicationPad1d((0, self.stride2))
         self.padding_patch_layer3 = nn.ReplicationPad1d((0, self.stride3))
@@ -153,8 +158,11 @@ class MultiPatchFormer(nn.Module):
             ]
         )
 
-        pe = torch.zeros(self.patch_num1, self.d_model)
-        for pos in range(self.patch_num1):
+        # pe = torch.zeros(self.patch_num1, self.d_model)
+        # for pos in range(self.patch_num1):
+        max_patch_num = max(self.patch_num1, self.patch_num2, self.patch_num3, self.patch_num4)
+        pe = torch.zeros(max_patch_num, self.d_model)
+        for pos in range(max_patch_num):
             for i in range(0, self.d_model, 2):
                 wavelength = 10000 ** ((2 * i) / self.d_model)
                 pe[pos, i] = math.sin(pos / wavelength)
@@ -162,8 +170,11 @@ class MultiPatchFormer(nn.Module):
         pe = pe.unsqueeze(0)  # add a batch dimention to your pe matrix
         self.register_buffer("pe", pe)
 
+        # 计算最小序列长度
+        min_seq_len = min(self.patch_num1, self.patch_num2, self.patch_num3, self.patch_num4)
+        
         self.embedding_channel = nn.Conv1d(
-            in_channels=self.d_model * self.patch_num1,
+            in_channels=self.d_model,
             out_channels=self.d_model,
             kernel_size=1,
         )
@@ -229,12 +240,20 @@ class MultiPatchFormer(nn.Module):
             rearrange(x_i_p4, "b c l -> (b c) l").unsqueeze(-1).permute(0, 2, 1)
         ).permute(0, 2, 1)
 
+        # Ensure all encoding_patch tensors have the same sequence length
+        min_seq_len = min(encoding_patch1.size(1), encoding_patch2.size(1), encoding_patch3.size(1), encoding_patch4.size(1))
+        encoding_patch1 = encoding_patch1[:, :min_seq_len, :]
+        encoding_patch2 = encoding_patch2[:, :min_seq_len, :]
+        encoding_patch3 = encoding_patch3[:, :min_seq_len, :]
+        encoding_patch4 = encoding_patch4[:, :min_seq_len, :]
+
         encoding_patch = (
                 torch.cat(
                     (encoding_patch1, encoding_patch2, encoding_patch3, encoding_patch4),
                     dim=-1,
                 )
-                + self.pe
+                #+ self.pe
+                + self.pe[:,:min_seq_len,:]
         )
         # Temporal encoding
         for i in range(self.N):
@@ -244,6 +263,18 @@ class MultiPatchFormer(nn.Module):
         x_patch_c = rearrange(
             encoding_patch, "(b c) p d -> b c (p d)", b=x_enc.shape[0], c=self.d_channel
         )
+
+        # 动态调整embedding_channel的输入通道数
+        # x_patch_c的形状为[B, C, P*D]，其中P是实际的patch序列长度，D是d_model
+        # 我们需要将in_channels设置为P*D
+        p_times_d = x_patch_c.shape[2]  # P*D
+        if self.embedding_channel.in_channels != p_times_d:
+            self.embedding_channel = nn.Conv1d(
+                in_channels=p_times_d,
+                out_channels=self.d_model,
+                kernel_size=1,
+            ).to(x_patch_c.device)
+
         x_ch = self.embedding_channel(x_patch_c.permute(0, 2, 1)).transpose(
             1, 2
         )  # [b c d]
