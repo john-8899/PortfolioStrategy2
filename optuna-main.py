@@ -29,10 +29,8 @@ from EarlyStopping import EarlyStopping
 from sklearn.metrics import precision_score,recall_score,f1_score,classification_report,accuracy_score #roc_curve,auc
 from collections import Counter
 from tqdm import tqdm
-from Autoformer import Autoformer
-from TimeMixer import TimeMixer
-from Configs import TimeMixer_Configs,TimesNet_configs,TimesNet_configs2
-from TimesNet import CTimesNet
+from Configs import TimesNet_configs,TimesNet_configs2
+from TimeSeriesModels.TimesNet import CTimesNet
 import matplotlib
 import optuna
 matplotlib.use('TkAgg')  # 替换当前后端
@@ -165,7 +163,7 @@ class PortfolioStrategy:
             #     model = early_stop.best_model
             #     break
             # optuna,早停
-            trial.report(loss_sum/step,epoch)#
+            trial.report(val_loss_sum/val_step,epoch)#
             if trial.should_prune():
                 raise optuna.TrialPruned()
 
@@ -478,7 +476,7 @@ class PortfolioStrategy:
 
         # 设置当前GPU设备:
         if torch.cuda.device_count() > 0:
-            device_id = trial.num % torch.cuda.device_count()
+            device_id = trial.number % torch.cuda.device_count()
             self.device = torch.device(f"cuda:{device_id}")
 
         #超参数搜索空间
@@ -486,12 +484,12 @@ class PortfolioStrategy:
             'd_model': trial.suggest_categorical('d_model', [128, 256, 512]),
             'd_ff': trial.suggest_categorical('d_ff', [64,128, 256]),
             'num_kernels':trial.suggest_int('num_kernels', 3, 6),
-            'top_k':trial.suggest_int('top_k', 2, 5),
+            'top_k':trial.suggest_int('top_k', 1, 5),
             'e_layers':trial.suggest_int('e_layers', 2, 5),
             'freq':trial.suggest_categorical('freq', ['h','d', 'w', 'm']),
             'dropout':trial.suggest_float('dropout', 0.1, 0.5),
             'batch_size':trial.suggest_categorical('batch_size', [16, 32, 64]),
-            'learning_rate': trial.suggest_float('learning_rate', 1e-5, 1e-2, log=True),
+            'learning_rate': trial.suggest_float('learning_rate', 1e-4, 1e-2, log=True),
             'weight_decay': trial.suggest_float('weight_decay', 1e-5, 1e-2, log=True),
         }
 
@@ -547,7 +545,7 @@ class PortfolioStrategy:
         model.loss_func = nn.CrossEntropyLoss().to(self.device)
 
         # 设置训练轮数
-        epochs = 1200
+        epochs = 2#1200
         # 训练模型:
         dfhistory = self.train_model(model,epochs,train_loader,test_loader,trial)
 
@@ -559,6 +557,10 @@ class PortfolioStrategy:
         ypred,ytest = self.PredictionEvaluation(model,test_loader)
         testAcc,fprecision,frecall,F1score,c1precision,c1recall,c1F1score = self.modelEvaluation2(ytest,ypred)
 
+        # 清理资源
+        del model, train_loader, test_loader
+        torch.cuda.empty_cache()
+
         return F1score
 
     def optimize_hyperparameters(self):
@@ -567,8 +569,16 @@ class PortfolioStrategy:
                                     sampler=optuna.samplers.TPESampler(),#采样器
                                     pruner=optuna.pruners.MedianPruner(n_warmup_steps=5)#剪枝器
                                     )
+
+        # 定义回调函数
+        def callback(study, trial):
+            print(f"Trial {trial.number}: Score = {trial.value}")
+            if trial.value is not None:
+                print(f"Parameters: {trial.params}")
         # 定义目标函数
-        study.optimize(self.objective, n_trials=80,n_jobs=2)
+        study.optimize(self.objective, n_trials=8,n_jobs=1,show_progress_bar=True)
+        # 运行优化：带有回调函数
+        #study.optimize(self.objective, n_trials=80, n_jobs=1, show_progress_bar=True,callbacks=[callback])
 
         # 获取最佳参数
         best_value = study.best_value
