@@ -28,7 +28,7 @@ from EarlyStopping import EarlyStopping
 from sklearn.metrics import precision_score,recall_score,f1_score,classification_report,accuracy_score #roc_curve,auc
 from collections import Counter
 from tqdm import tqdm
-from Configs import MultiPatchFormer_configs
+from TimeSeriesModels.Configs import MultiPatchFormer_configs
 from TimeSeriesModels.MultiPatchFormer import MultiPatchFormer
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端

@@ -29,7 +29,7 @@ from EarlyStopping import EarlyStopping
 from sklearn.metrics import precision_score,recall_score,f1_score,classification_report,accuracy_score #roc_curve,auc
 from collections import Counter
 from tqdm import tqdm
-from Configs import TimesNet_configs,TimesNet_configs2
+from TimeSeriesModels.Configs import TimesNet_configs,TimesNet_configs2
 from TimeSeriesModels.TimesNet import CTimesNet
 import matplotlib
 import optuna
