@@ -21,6 +21,7 @@ class Transpose(nn.Module):
 class PatchTST(nn.Module):
     """
     PatchTST模型：专门用于时间序列分类任务的模型
+    Paper link: https://arxiv.org/pdf/2211.14730.pdf
     """
 
     def __init__(self, configs, patch_len=16, stride=8):

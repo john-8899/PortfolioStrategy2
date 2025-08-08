@@ -244,18 +244,20 @@ class PatchTST_configs:
 
         :param seq_len: 时间序列长度
         :param enc_in: 特征数
+        patch_len  通常为8、12、16、24，需要根据seq_len选择合适的值
+        stride 通常为patch_len的一半或与patch_len相等
         """
         self.seq_len = seq_len # 输入序列长度
         self.enc_in = enc_in # 输入特征维度(特征数)
 
         self.d_model = 128 # d_model=in_channels
-        self.d_ff = 256 # d_ff = (out_channels)
+        self.d_ff = 256 # d_ff = (out_channels) 通常为d_model的2-4倍，如128、256、512
 
-        self.e_layers = 3 # 编码器层数
+        self.e_layers = 2 # 编码器层数
 
-        self.factor = 5 # 注意力机制参数
-        self.n_heads = 8
-        self.activation = 'relu'
+        self.factor = 5 # 注意力机制参数 通常为3、5、7
+        self.n_heads = 8 # 注意力头数 通常为4、8、16、32，需要能被d_model整除
+        self.activation = 'relu'# gelu/relu
 
         self.dropout = 0.1 # dropout
         self.num_class = 2  # 分类数
