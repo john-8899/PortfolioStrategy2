@@ -32,6 +32,9 @@ class PatchTST(nn.Module):
             configs: 模型配置参数
             patch_len: int, patch长度用于patch_embedding
             stride: int, 步长用于patch_embedding
+
+            patch_len  通常为8、12、16、24，需要根据seq_len选择合适的值
+            stride 通常为patch_len的一半或与patch_len相等
         """
         super(PatchTST, self).__init__()
         self.configs = configs
