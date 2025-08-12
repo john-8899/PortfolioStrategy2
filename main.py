@@ -28,10 +28,11 @@ from EarlyStopping import EarlyStopping
 from sklearn.metrics import precision_score,recall_score,f1_score,classification_report,accuracy_score #roc_curve,auc
 from collections import Counter
 from tqdm import tqdm
-from TimeSeriesModels.Configs import MultiPatchFormer_configs,TimeXer_configs,PatchTST_configs
+from TimeSeriesModels.Configs import MultiPatchFormer_configs,TimeXer_configs,PatchTST_configs,iTransformer_configs
 #from TimeSeriesModels.MultiPatchFormer import MultiPatchFormer
 #from TimeSeriesModels.TimeXer import TimeXer
-from TimeSeriesModels.PatchTST import PatchTST
+#from TimeSeriesModels.PatchTST import PatchTST
+from TimeSeriesModels.iTransformer import iTransformer
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
 import matplotlib.pyplot as plt
@@ -437,9 +438,12 @@ class PortfolioStrategy:
         # configs = TimeXer_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = TimeXer(configs)
 
-        # PatchTST模型调用
-        configs = PatchTST_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = PatchTST(configs)
+        # # PatchTST模型调用
+        # configs = PatchTST_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = PatchTST(configs)
+        #iTerformer模型调用
+        configs = iTransformer_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = iTransformer(configs)
 
         model = model.to(self.device)
         #设置优化器
