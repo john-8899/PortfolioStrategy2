@@ -241,7 +241,6 @@ class TimeXer_configs:
 class PatchTST_configs:
     def __init__(self,seq_len,enc_in):
         """
-
         :param seq_len: 时间序列长度
         :param enc_in: 特征数
         patch_len  通常为8、12、16、24，需要根据seq_len选择合适的值
@@ -250,7 +249,28 @@ class PatchTST_configs:
         self.seq_len = seq_len # 输入序列长度
         self.enc_in = enc_in # 输入特征维度(特征数)
 
-        self.d_model = 128 # d_model=in_channels
+        self.d_model = 128 # d_model=in_channels 通常为64、128、256、512，根据数据复杂度和计算资源选择
+        self.d_ff = 256 # d_ff = (out_channels) 通常为d_model的2-4倍，如128、256、512
+
+        self.e_layers = 2 # 编码器层数
+
+        self.factor = 5 # 注意力机制参数 通常为3、5、7
+        self.n_heads = 16 # 注意力头数 通常为4、8、16、32，需要能被d_model整除
+        self.activation = 'relu'# gelu/relu
+
+        self.dropout = 0.1 # dropout
+        self.num_class = 2  # 分类数
+
+class iTransformer_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.d_model = 128 # d_model=in_channels 通常为64、128、256、512，根据数据复杂度和计算资源选择
         self.d_ff = 256 # d_ff = (out_channels) 通常为d_model的2-4倍，如128、256、512
 
         self.e_layers = 2 # 编码器层数
@@ -258,6 +278,16 @@ class PatchTST_configs:
         self.factor = 5 # 注意力机制参数 通常为3、5、7
         self.n_heads = 8 # 注意力头数 通常为4、8、16、32，需要能被d_model整除
         self.activation = 'relu'# gelu/relu
+
+        #嵌入层参数：嵌入类型 timeF, fixed, learned
+        """
+            timeF：时间序列预测、时间特征编码
+            fixed：NLP中的位置编码、图结构编码
+            learned：文本分类、机器翻译、推荐系统等
+        """
+        self.embed = 'timeF'  # 嵌入类型 timeF, fixed, learned
+        self.freq = 'd'  # 时间频率 [s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly]
+
 
         self.dropout = 0.1 # dropout
         self.num_class = 2  # 分类数
