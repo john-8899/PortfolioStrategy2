@@ -10,6 +10,7 @@ from layers.Embed import DataEmbedding_inverted
 class iTransformer(nn.Module):
     """iTransformer模型：专门用于时间序列分类任务的模型
     优化了网络结构以提高分类性能和计算效率。
+    Paper link: https://arxiv.org/abs/2310.06625
     Args:
         configs: 模型配置参数，包含seq_len, d_model, num_class等
     """
