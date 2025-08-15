@@ -328,5 +328,12 @@ class Koopa_configs:
         self.seq_len = seq_len # 输入序列长度
         self.enc_in = enc_in # 输入特征维度(特征数)
 
+        self.num_blocks = 3     ## num_blocks: int, number of Koopa blocks Koopa块的数量
+        self.dynamic_dim = 128  ## dynamic_dim: int, latent dimension of koopman embedding 嵌入的潜在维度 默认为128
+        self.hidden_dim = 64    ## hidden_dim: int, hidden dimension of en/decoder  编码器/解码器的隐藏维度 默认为64
+        self.hidden_layers = 2  ##hidden_layers: int, number of hidden layers of en/decoder 编码器/解码器的隐藏层数量 默认为2
+        self.multistep = False  ## multistep: bool, whether to use approximation for multistep K  否使用多步K的近似 默认： False
+        self.alpha = 0.2        ## alpha: float, spectrum filter ratio 光谱滤波比 默认为0.2
+
         self.dropout = 0.1 # dropout
         self.num_class = 2  # 分类数
