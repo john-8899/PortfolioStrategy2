@@ -299,11 +299,11 @@ class MICN_configs:
         """
         self.seq_len = seq_len # 输入序列长度
         self.enc_in = enc_in # 输入特征维度(特征数)
-        self.c_out = enc_in#输出特征维度(特征数)
+        self.c_out = enc_in #输出特征维度(特征数)
 
         self.d_model = 256 # d_model=in_channels 通常为64、128、256、512，根据数据复杂度和计算资源选择
 
-        self.d_layers = 2 # MIC层数
+        self.d_layers = 4 # MIC层数
 
         self.n_heads = 8 # 注意力头数 通常为4、8、16、32，需要能被d_model整除
 
@@ -315,6 +315,18 @@ class MICN_configs:
         """
         self.embed = 'timeF'  # 嵌入类型 timeF, fixed, learned
         self.freq = 'd'  # 时间频率 [s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly]
+
+        self.dropout = 0.1 # dropout
+        self.num_class = 2  # 分类数
+
+class Koopa_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
 
         self.dropout = 0.1 # dropout
         self.num_class = 2  # 分类数
