@@ -34,6 +34,7 @@ from TimeSeriesModels.Configs import *
 #from TimeSeriesModels.PatchTST import PatchTST
 #from TimeSeriesModels.iTransformer import iTransformer
 from TimeSeriesModels.MICN import MICN
+from TimeSeriesModels.Koopa import Koopa
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
 import matplotlib.pyplot as plt
@@ -447,10 +448,13 @@ class PortfolioStrategy:
         # configs = iTransformer_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = iTransformer(configs)
 
-        #MICN模型调用
-        configs = MICN_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = MICN(configs)
+        # #MICN模型调用
+        # configs = MICN_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = MICN(configs)
 
+        # Koopa模型调用
+        configs = Koopa_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = Koopa(configs)
 
         model = model.to(self.device)
         #设置优化器
