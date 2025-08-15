@@ -246,7 +246,8 @@ class Koopa(nn.Module):
         configs: 模型配置参数，包含seq_len, num_class等
     """
 
-    def __init__(self, configs, dynamic_dim=128, hidden_dim=64, hidden_layers=2, num_blocks=3, multistep=False):
+    #def __init__(self, configs, dynamic_dim=128, hidden_dim=64, hidden_layers=2, num_blocks=3, multistep=False):
+    def __init__(self, configs):
         """
         mask_spectrum: list, shared frequency spectrums 共享频率谱
         seg_len: int, segment length of time series 时间序列的段长度
@@ -263,13 +264,21 @@ class Koopa(nn.Module):
         self.num_class:int = configs.num_class
         self.enc_in:int = configs.enc_in
 
-        self.seg_len = 24  # 固定segment长度用于分类任务
-        self.num_blocks = num_blocks
-        self.dynamic_dim = dynamic_dim
-        self.hidden_dim = hidden_dim
-        self.hidden_layers = hidden_layers
-        self.multistep = multistep
-        self.alpha = 0.2
+        # self.seg_len = 24  # 固定segment长度用于分类任务
+        # self.num_blocks = num_blocks
+        # self.dynamic_dim = dynamic_dim
+        # self.hidden_dim = hidden_dim
+        # self.hidden_layers = hidden_layers
+        # self.multistep = multistep
+        # self.alpha = 0.2
+
+        self.seg_len = 24  # 固定segment长度用于分类任务 默认：24
+        self.num_blocks:int = configs.num_blocks
+        self.dynamic_dim:int = configs.dynamic_dim
+        self.hidden_dim:int = configs.hidden_dim
+        self.hidden_layers:int = configs.hidden_layers
+        self.multistep: bool = configs.multistep
+        self.alpha: float = configs.alpha
 
         # 为分类任务简化mask_spectrum计算
         self.mask_spectrum = torch.arange(0, int(self.seq_len / 2 * self.alpha))
