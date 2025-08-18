@@ -33,7 +33,8 @@ from TimeSeriesModels.Configs import *
 #from TimeSeriesModels.TimeXer import TimeXer
 #from TimeSeriesModels.PatchTST import PatchTST
 #from TimeSeriesModels.iTransformer import iTransformer
-from TimeSeriesModels.MICN import MICN
+#from TimeSeriesModels.MICN import MICN
+from TimeSeriesModels.FiLM import FiLM
 from TimeSeriesModels.Koopa import Koopa
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
@@ -452,9 +453,13 @@ class PortfolioStrategy:
         # configs = MICN_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = MICN(configs)
 
-        # Koopa模型调用
-        configs = Koopa_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = Koopa(configs)
+        # # Koopa模型调用
+        # configs = Koopa_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = Koopa(configs)
+
+        # FiLM模型调用
+        configs = FiLM_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = FiLM(configs)
 
         model = model.to(self.device)
         #设置优化器
