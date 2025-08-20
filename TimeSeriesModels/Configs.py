@@ -359,3 +359,18 @@ class FiLM_configs:
 
         self.dropout = 0.1 # dropout
         self.num_class = 2  # 分类数
+
+class SegRNN_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.d_model = 128
+        self.seg_len = 16
+
+        self.dropout = 0.1 # dropout
+        self.num_class = 2  # 分类数
