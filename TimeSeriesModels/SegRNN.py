@@ -20,13 +20,16 @@ class SegRNN(nn.Module):
         self.num_class: int = configs.num_class
 
         self.seg_len: int= configs.seg_len
-        self.seg_num_x: int = self.seq_len // self.seg_len
+
+        self.seg_num_x: int = self.seq_len  // self.seg_len
+        self.seg_num_y: int = self.seq_len // self.seg_len
+        #print(f"seg_num_x: {self.seg_num_x},seg_num_y: {self.seg_num_y}")
 
         # building model
         # 值嵌入层：将分割后的序列片段映射到高维特征空间
         # 输入维度为seg_len，输出维度为d_model
         self.valueEmbedding = nn.Sequential(
-            nn.Linear(self.seg_len, self.d_model),
+            nn.Linear(self.seq_len, self.d_model),
             nn.ReLU()
         )
         # GRU循环神经网络层：捕捉序列的时间依赖关系
@@ -35,10 +38,15 @@ class SegRNN(nn.Module):
                           batch_first=True, bidirectional=False)
         # 位置嵌入参数：学习序列段的位置信息
         # 维度为[seg_num_x, d_model//2]，seg_num_x为序列段数量
-        self.pos_emb = nn.Parameter(torch.randn(self.seg_num_x, self.d_model // 2))
+        self.pos_emb = nn.Parameter(torch.randn(self.seg_num_y, self.d_model // 2))
         # 通道嵌入参数：学习不同输入通道的特征表示
         # 维度为[enc_in, d_model//2]，enc_in为输入通道数
         self.channel_emb = nn.Parameter(torch.randn(self.enc_in, self.d_model // 2))
+
+        self.predict = nn.Sequential(
+            nn.Dropout(self.dropout),
+            nn.Linear(self.d_model, self.seq_len)
+        )
 
         # 分类任务专用投影层
         self.act = F.gelu
@@ -50,13 +58,16 @@ class SegRNN(nn.Module):
         # b:batch_size c:channel_size s:seq_len
         # d:d_model w:seg_len n:seg_num_x
         batch_size = x.size(0)
-
+        #print(f"x 0形状：{x.size()}")
         # normalization and permute     b,s,c -> b,c,s
         seq_last = x[:, -1:, :].detach()
+        #print(f"seq_last形状：{seq_last.size()}")
         x = (x - seq_last).permute(0, 2, 1)  # b,c,s
-
+        #print(f"x 1形状：{x.size()}")
         # segment and embedding    b,c,s -> bc,n,w -> bc,n,d
-        x = self.valueEmbedding(x.reshape(-1, self.seg_num_x, self.seg_len))
+        #x = self.valueEmbedding(x.reshape(-1, self.seg_num_x, self.seg_len))
+        x = self.valueEmbedding(x.reshape(-1, 1, self.seq_len))
+        #print(f"x 2形状：{x.size()}")
 
         # encoding
         _, hn = self.rnn(x)  # bc,n,d  1,bc,d
@@ -66,13 +77,26 @@ class SegRNN(nn.Module):
         # c,n,d -> cm,1,d -> bcm, 1, d
         pos_emb = torch.cat([
             self.pos_emb.unsqueeze(0).repeat(self.enc_in, 1, 1),
-            self.channel_emb.unsqueeze(1).repeat(1, self.seg_num_x, 1)
+            self.channel_emb.unsqueeze(1).repeat(1, self.seg_num_y, 1)
         ], dim=-1).view(-1, 1, self.d_model).repeat(batch_size, 1, 1)
 
-        _, hy = self.rnn(pos_emb, hn.repeat(1, 1, self.seg_num_x).view(1, -1, self.d_model))  # bcm,1,d  1,bcm,d
+        #修改前
+        #_, hy = self.rnn(pos_emb, hn.repeat(1, 1, self.seg_num_y).view(1, -1, self.d_model))  # bcm,1,d  1,bcm,d
+
+        #print(f"pos_emb形状：{pos_emb.size()}")
+        # 直接使用原始SegRNN方法，但确保维度正确
+        hidden_states = hn.repeat(1, 1, self.seg_num_y)
+        #print(f"hn 形状：{hn.size()}")
+        #print(f"hidden_states形状：{hidden_states.size()}")
+        hidden_states= hidden_states.view(1, -1, self.d_model)
+        #print(f"hidden_states view形状：{hidden_states.size()}")
+
+        _, hy = self.rnn(pos_emb, hidden_states)  # bcm,1,d  1,bcm,d
+        #print(f"hy 形状：{hy.size()}")
 
         # 1,bcm,d -> 1,bcm,w -> b,c,s
-        y = hy.view(-1, self.enc_in, self.seq_len)
+        y = self.predict(hy).view(batch_size, self.seg_num_x, self.enc_in, self.seq_len).mean(dim=1)
+        #print(f"y 形状：{y.size()}")
 
         # permute and denorm
         y = y.permute(0, 2, 1) + seq_last
