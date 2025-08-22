@@ -387,7 +387,7 @@ class TiDE_configs:
         self.e_layers = 3  # 编码器层数 默认3
 
         self.bias = True # 是否使用偏置项 默认True
-        self.feature_encode_dim = 2 # 特征编码维度 默认2
+        self.feature_encode_dim = 20 # 特征编码维度 默认2
 
-        self.dropout = 0.1 # dropout
+        self.dropout = 0.05 # dropout
         self.num_class = 2  # 分类数

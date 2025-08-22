@@ -49,6 +49,7 @@ class ResBlock(nn.Module):
 
 class TiDE(nn.Module):
     """TiDE模型：专门用于时间序列分类任务的模型
+    paper: https://arxiv.org/pdf/2304.08424.pdf
     Args:
         configs: 模型配置参数，包含seq_len, d_model, num_class等
     """
@@ -61,6 +62,7 @@ class TiDE(nn.Module):
         """
         super(TiDE, self).__init__()
         self.configs = configs
+        self.enc_in: int = configs.enc_in  # 输入特征维度(特征数)
         self.seq_len: int = configs.seq_len  # 序列长度
         self.hidden_dim: int = configs.d_model  # 隐藏层维度
         self.res_hidden: int = configs.d_model  # 残差块隐藏层维度
@@ -74,7 +76,7 @@ class TiDE(nn.Module):
         self.feature_encoder = ResBlock(self.seq_len, self.res_hidden, self.feature_encode_dim, dropout, self.bias)
 
         # 编码器堆叠
-        flatten_dim = self.seq_len + self.seq_len * self.feature_encode_dim
+        flatten_dim = self.enc_in*(1 + self.feature_encode_dim) # 特征编码器的输出维度
         self.encoders = nn.Sequential(
             ResBlock(flatten_dim, self.res_hidden, self.hidden_dim, dropout, self.bias),
             *([ResBlock(self.hidden_dim, self.res_hidden, self.hidden_dim, dropout, self.bias)] * (self.encoder_num - 1))
@@ -95,25 +97,26 @@ class TiDE(nn.Module):
         Returns:
             output: 分类结果，形状为 [B, num_class]
         """
+        B, T, C = x_enc.shape  # [32, 60, 87]
         # 特征编码
         feature = self.feature_encoder(x_enc.permute(0, 2, 1))
+        # print(f"feature size {feature.shape}")
+        # print(f"x_enc size {x_enc.shape}")
 
-        # 编码器处理
-        hidden = self.encoders(torch.cat([x_enc, feature.reshape(feature.shape[0], -1)], dim=-1))
+        # 对时间维度进行全局平均池化，得到每个通道的表示
+        # [B, T, C] -> [B, C] (通过时间维度的平均池化)
+        x_pooled = torch.mean(x_enc, dim=1)  # [B, C]
+
+        # 拼接原始通道特征和编码特征
+        # [B, C] + [B, C, feature_encode_dim] -> [B, C*(1+feature_encode_dim)]
+        feature_flat = feature.reshape(B, -1)  # [B, C*feature_encode_dim]
+        # print(f"feature_flat size {feature_flat.shape} ,xpooled size {x_pooled.shape}")
+        # # 编码器处理
+        hidden = self.encoders(torch.cat([x_pooled, feature_flat], dim=-1))
 
         # 分类头处理
         output = self.act(hidden)
         output = self.dropout(output)
-
-        # 应用掩码（如果提供）
-        if x_mark_enc is not None:
-            # 平均池化以获得序列级表示
-            output = output.reshape(output.shape[0], -1, self.hidden_dim)
-            output = torch.mean(output, dim=1)
-        else:
-            # 直接使用输出
-            output = output.reshape(output.shape[0], -1, self.hidden_dim)
-            output = torch.mean(output, dim=1)
 
         # 投影到类别空间
         output = self.projection(output)  # [B, num_class]
