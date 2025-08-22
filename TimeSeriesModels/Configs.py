@@ -1,6 +1,4 @@
 # -*- coding:utf-8 -*-
-from sympy import false
-
 
 class TimeMixer_Configs:
     def __init__(self,seq_len,enc_in):
@@ -369,8 +367,27 @@ class SegRNN_configs:
         self.seq_len = seq_len # 输入序列长度
         self.enc_in = enc_in # 输入特征维度(特征数)
 
-        self.d_model = 128
-        self.seg_len = 16
+        self.d_model = 128 # d_model=in_channels 通常为64、128、256、512，根据数据复杂度和计算资源选择
+        self.seg_len = 8 # 片段长度 默认16
+
+        self.dropout = 0.1 # dropout
+        self.num_class = 2  # 分类数
+
+
+class TiDE_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.d_model = 128 # hidden_dim 隐藏层维度 / res_hidden 残差块隐藏层维度 默认128
+        self.e_layers = 3  # 编码器层数 默认3
+
+        self.bias = True # 是否使用偏置项 默认True
+        self.feature_encode_dim = 2 # 特征编码维度 默认2
 
         self.dropout = 0.1 # dropout
         self.num_class = 2  # 分类数
