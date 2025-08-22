@@ -35,8 +35,9 @@ from TimeSeriesModels.Configs import *
 #from TimeSeriesModels.iTransformer import iTransformer
 #from TimeSeriesModels.MICN import MICN
 #from TimeSeriesModels.FiLM import FiLM
-from TimeSeriesModels.SegRNN import SegRNN
-from TimeSeriesModels.Koopa import Koopa
+#from TimeSeriesModels.SegRNN import SegRNN
+#from TimeSeriesModels.Koopa import Koopa
+from TimeSeriesModels.TiDE import TiDE
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
 import matplotlib.pyplot as plt
@@ -462,9 +463,13 @@ class PortfolioStrategy:
         # configs = FiLM_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = FiLM(configs)
 
-        # SegRNN模型调用
-        configs = SegRNN_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = SegRNN(configs)
+        # # SegRNN模型调用
+        # configs = SegRNN_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = SegRNN(configs)
+
+        # TiDE模型调用
+        configs = TiDE_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = TiDE(configs)
 
         model = model.to(self.device)
         #设置优化器
