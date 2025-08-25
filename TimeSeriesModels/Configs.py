@@ -387,7 +387,22 @@ class TiDE_configs:
         self.e_layers = 3  # 编码器层数 默认3
 
         self.bias = True # 是否使用偏置项 默认True
-        self.feature_encode_dim = 20 # 特征编码维度 默认2
+        self.feature_encode_dim = 78 # 特征编码维度 默认2
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class SCINet_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.current_level = 5 # 当前递归层级，默认为3
+        self.kernel_size = 5 # 卷积核大小 默认5
 
         self.dropout = 0.05 # dropout
         self.num_class = 2  # 分类数
