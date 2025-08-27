@@ -38,7 +38,8 @@ from TimeSeriesModels.Configs import *
 #from TimeSeriesModels.SegRNN import SegRNN
 #from TimeSeriesModels.Koopa import Koopa
 #from TimeSeriesModels.TiDE import TiDE
-from TimeSeriesModels.SCINet import SCINetModel
+#from TimeSeriesModels.SCINet import SCINetModel
+from TimeSeriesModels.LightTS import LightTS
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
 import matplotlib.pyplot as plt
@@ -472,9 +473,13 @@ class PortfolioStrategy:
         # configs = TiDE_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = TiDE(configs)
 
-        # SCINet模型调用
-        configs = SCINet_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = SCINetModel(configs)
+        # # SCINet模型调用
+        # configs = SCINet_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = SCINetModel(configs)
+
+        # LightTS模型调用
+        configs = LightTS_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = LightTS(configs)
 
         model = model.to(self.device)
         #设置优化器

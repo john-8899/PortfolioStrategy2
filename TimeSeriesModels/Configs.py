@@ -401,8 +401,23 @@ class SCINet_configs:
         self.seq_len = seq_len # 输入序列长度
         self.enc_in = enc_in # 输入特征维度(特征数)
 
-        self.current_level = 5 # 当前递归层级，默认为3
+        self.current_level = 4 # 当前递归层级，默认为3
         self.kernel_size = 5 # 卷积核大小 默认5
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class LightTS_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.d_model = 128 # 隐藏层维度
+        self.chunk_size = 30 # 分块大小 默认为24
 
         self.dropout = 0.05 # dropout
         self.num_class = 2  # 分类数
