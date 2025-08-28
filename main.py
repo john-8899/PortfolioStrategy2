@@ -39,7 +39,8 @@ from TimeSeriesModels.Configs import *
 #from TimeSeriesModels.Koopa import Koopa
 #from TimeSeriesModels.TiDE import TiDE
 #from TimeSeriesModels.SCINet import SCINetModel
-from TimeSeriesModels.LightTS import LightTS
+#from TimeSeriesModels.LightTS import LightTS
+from TimeSeriesModels.FEDformer import FEDformer
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
 import matplotlib.pyplot as plt
@@ -477,9 +478,13 @@ class PortfolioStrategy:
         # configs = SCINet_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = SCINetModel(configs)
 
-        # LightTS模型调用
-        configs = LightTS_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = LightTS(configs)
+        # # LightTS模型调用
+        # configs = LightTS_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = LightTS(configs)
+
+        # FEDformer模型调用
+        configs = FEDformer_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = FEDformer(configs)
 
         model = model.to(self.device)
         #设置优化器
