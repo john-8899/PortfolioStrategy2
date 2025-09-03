@@ -40,7 +40,8 @@ from TimeSeriesModels.Configs import *
 #from TimeSeriesModels.TiDE import TiDE
 #from TimeSeriesModels.SCINet import SCINetModel
 #from TimeSeriesModels.LightTS import LightTS
-from TimeSeriesModels.FEDformer import FEDformer
+#from TimeSeriesModels.FEDformer import FEDformer
+from TimeSeriesModels.ETSformer import ETSformer
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
 import matplotlib.pyplot as plt
@@ -482,9 +483,13 @@ class PortfolioStrategy:
         # configs = LightTS_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = LightTS(configs)
 
-        # FEDformer模型调用
-        configs = FEDformer_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = FEDformer(configs)
+        # # FEDformer模型调用
+        # configs = FEDformer_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = FEDformer(configs)
+
+        # ETSformer模型调用
+        configs = ETSformer_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = ETSformer(configs)
 
         model = model.to(self.device)
         #设置优化器

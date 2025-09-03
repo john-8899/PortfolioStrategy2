@@ -18,13 +18,13 @@ class FEDformer(nn.Module):
         configs: 模型配置参数，包含seq_len, d_model, num_class等
     """
 
-    def __init__(self, configs, version='Wavelets', mode_select='random', modes=32):
+    def __init__(self, configs, version='Fourier', mode_select='random', modes=16):
         """初始化FEDformer分类模型
 
         Args:
             configs: 模型配置参数
-            version: FEDformer版本，选项: [Fourier, Wavelets]
-            mode_select: 模式选择方法，选项: [random, low]
+            version: FEDformer版本不同的自注意力机制，选项: [Fourier:傅里叶变换, Wavelets:小波变换] 默认：Fourier
+            mode_select: 频域增强模式选择方法，选项: [random, low] 默认：random
             modes: 选择的模式数量 ，modes决定了从傅里叶变换结果中选取多少个频率分量进行处理 默认32
         """
         super(FEDformer, self).__init__()
