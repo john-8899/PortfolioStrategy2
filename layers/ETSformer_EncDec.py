@@ -172,7 +172,8 @@ class FourierLayer(nn.Module):
 
     def topk_freq(self, x_freq):
         values, indices = torch.topk(x_freq.abs(), self.k, dim=1, largest=True, sorted=True)
-        mesh_a, mesh_b = torch.meshgrid(torch.arange(x_freq.size(0)), torch.arange(x_freq.size(2)))
+        #ÐÞ¸Ä£ºÌí¼Ó indexing='ij'
+        mesh_a, mesh_b = torch.meshgrid(torch.arange(x_freq.size(0)), torch.arange(x_freq.size(2)),indexing='ij')
         index_tuple = (mesh_a.unsqueeze(1).to(indices.device), indices, mesh_b.unsqueeze(1).to(indices.device))
         x_freq = x_freq[index_tuple]
 
