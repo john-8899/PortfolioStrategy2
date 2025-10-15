@@ -41,8 +41,9 @@ from TimeSeriesModels.Configs import *
 #from TimeSeriesModels.SCINet import SCINetModel
 #from TimeSeriesModels.LightTS import LightTS
 #from TimeSeriesModels.FEDformer import FEDformer
-from TimeSeriesModels.ETSformer import ETSformer
-from TimeSeriesModels.DLinear import DLinear
+#from TimeSeriesModels.ETSformer import ETSformer
+#from TimeSeriesModels.DLinear import DLinear
+from TimeSeriesModels.TemporalFusionTransformer import TemporalFusionTransformer
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
 import matplotlib.pyplot as plt
@@ -492,9 +493,13 @@ class PortfolioStrategy:
         # configs = ETSformer_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = ETSformer(configs)
 
-        # DLinear模型调用
-        configs = DLinear_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = DLinear(configs)
+        # # DLinear模型调用
+        # configs = DLinear_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = DLinear(configs)
+
+        #TemporalFusionTransformer模型调用
+        configs = TemporalFusionTransformer_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = TemporalFusionTransformer(configs)
 
         model = model.to(self.device)
         #设置优化器
