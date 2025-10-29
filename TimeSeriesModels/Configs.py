@@ -508,8 +508,8 @@ class  TemporalFusionTransformer_configs:
 
         self.n_heads = 8 #  注意力头数，表示多头注意力机制中的头数 需要能够整除d_model，以确保每个头的维度是整数 默认8
         self.d_model = 128 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
-        self.static_len = enc_in # 静态特征维度
-        self.observed_len = enc_in # 观测特征维度
+        self.static_len = 0 # 静态特征维度
+        self.observed_len = int(enc_in/2) # 观测特征维度
         #嵌入层参数：嵌入类型 timeF, fixed, learned
         """
             timeF：时间序列预测、时间特征编码
@@ -518,6 +518,75 @@ class  TemporalFusionTransformer_configs:
         """
         self.embed = 'timeF'  # 嵌入类型 timeF, fixed, learned 默认：timeF
         self.freq = 'd'  # 时间频率 [s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly]
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class  WPMixer_configs:
+    def __init__(self,seq_len,enc_in,batch_size=32,device="cpu"):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+        self.batch_size = batch_size # 批次大小
+        self.device = device # 设备名称
+        self.patch_len = int(seq_len / 4) # Patch大小,16
+        self.use_amp = False # 是否使用混合精度训练
+
+        self.d_model = 128 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class  FreTS_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.d_model = 128 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
+        self.channel_independence = '0' # 通道独立性
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class  PAttn_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.patch_len = 8 # Patch大小 常见的选择包括 8、12、16、24、32
+        self.stride = 2 # 填充长度 通常为 patch_len 的 1/4 到 1/2
+
+        self.d_model = 128 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
+        self.factor = 5 # 注意力机制的缩放因子
+        self.n_heads = 8 # 注意力头数，表示多头注意力机制中的头数 需要能够整除d_model，以确保每个头的维度是整数 默认8
+        self.d_ff = 256 # 前馈网络维度，表示前馈网络中的隐藏层维度 默认值为256（通常是d_model的2倍）
+        self.activation = 'gelu'# 激活函数类型，指定使用的激活函数 默认为gelu
+        self.e_layers = 3 # 编码器层数，表示编码器中堆叠的层数 默认为3
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class  KANAD_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.d_model = 32 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
+        #self.e_layers = 3 # 编码器层数，表示编码器中堆叠的层数 默认为3
 
         self.dropout = 0.05 # dropout
         self.num_class = 2  # 分类数

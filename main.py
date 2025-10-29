@@ -43,7 +43,11 @@ from TimeSeriesModels.Configs import *
 #from TimeSeriesModels.FEDformer import FEDformer
 #from TimeSeriesModels.ETSformer import ETSformer
 #from TimeSeriesModels.DLinear import DLinear
-from TimeSeriesModels.TemporalFusionTransformer import TemporalFusionTransformer
+#from TimeSeriesModels.TemporalFusionTransformer import TemporalFusionTransformer
+#from TimeSeriesModels.WPMixer import WPMixer
+#from TimeSeriesModels.FreTS import FreTS
+#from TimeSeriesModels.PAttn import PAttn
+from TimeSeriesModels.KANAD import KANAD
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
 import matplotlib.pyplot as plt
@@ -497,9 +501,25 @@ class PortfolioStrategy:
         # configs = DLinear_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = DLinear(configs)
 
-        #TemporalFusionTransformer模型调用
-        configs = TemporalFusionTransformer_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = TemporalFusionTransformer(configs)
+        # #TemporalFusionTransformer模型调用
+        # configs = TemporalFusionTransformer_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = TemporalFusionTransformer(configs)
+
+        # # WPMixer 模型调用
+        # configs = WPMixer_configs(seq_len=nSeqLen,enc_in=featureNum,batch_size=batch_size,device=self.device)
+        # model = WPMixer(configs)
+
+        # # FreTS模型调用
+        # configs = FreTS_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = FreTS(configs)
+
+        # # PAttn模型调用
+        # configs = PAttn_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = PAttn(configs)
+
+        # KANAD 模型调用
+        configs = KANAD_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = KANAD(configs)
 
         model = model.to(self.device)
         #设置优化器
