@@ -585,8 +585,161 @@ class  KANAD_configs:
         self.seq_len = seq_len # 输入序列长度
         self.enc_in = enc_in # 输入特征维度(特征数)
 
-        self.d_model = 32 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
+        self.d_model = 16 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
         #self.e_layers = 3 # 编码器层数，表示编码器中堆叠的层数 默认为3
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class  Reformer_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.n_heads = 8 #  注意力头数，表示多头注意力机制中的头数 需要能够整除d_model，以确保每个头的维度是整数 默认8
+        self.d_model = 128 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
+        self.d_ff = 256 # 前馈网络维度，表示前馈网络中的隐藏层维度 默认值为256（通常是d_model的2倍）
+        self.activation = 'gelu'# 激活函数类型，指定使用的激活函数 默认为gelu/relu
+        self.e_layers = 3 # 编码器层数，表示编码器中堆叠的层数 默认为3
+        #嵌入层参数：嵌入类型 timeF, fixed, learned
+        """
+            timeF：时间序列预测、时间特征编码
+            fixed：NLP中的位置编码、图结构编码
+            learned：文本分类、机器翻译、推荐系统等
+        """
+        self.embed = 'timeF'  # 嵌入类型 timeF, fixed, learned 默认：timeF
+        self.freq = 'd'  # 时间频率 [s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly]
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class  Pyraformer_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.n_heads = 32 #  注意力头数，表示多头注意力机制中的头数 需要能够整除d_model，以确保每个头的维度是整数 默认8
+        self.d_model = 128 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
+        self.d_ff = 256 # 前馈网络维度，表示前馈网络中的隐藏层维度 默认值为256（通常是d_model的2倍）
+        self.activation = 'gelu'# 激活函数类型，指定使用的激活函数 默认为gelu/relu
+        self.e_layers = 1 # 编码器层数，表示编码器中堆叠的层数 默认为3
+        #嵌入层参数：嵌入类型 timeF, fixed, learned
+        """
+            timeF：时间序列预测、时间特征编码
+            fixed：NLP中的位置编码、图结构编码
+            learned：文本分类、机器翻译、推荐系统等
+        """
+        self.embed = 'timeF'  # 嵌入类型 timeF, fixed, learned 默认：timeF
+        self.freq = 'd'  # 时间频率 [s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly]
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class  Crossformer_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.seg_len = 12 # 分段长度
+        self.win_size = 4 # 窗口大小
+
+        self.n_heads = 8 #  注意力头数，表示多头注意力机制中的头数 需要能够整除d_model，以确保每个头的维度是整数 默认8
+        self.d_model = 128 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
+        self.d_ff = 256 # 前馈网络维度，表示前馈网络中的隐藏层维度 默认值为256（通常是d_model的2倍）
+
+        self.factor = 5 # 注意力机制的缩放因子
+        self.e_layers = 1 # 编码器层数，表示编码器中堆叠的层数 默认为3
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class  TSMixer_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.d_model = 512 # 表示模型中间层的隐藏维度大小，控制着模型的表达能力和复杂度
+
+        self.e_layers = 5 # 表示堆叠的 ResBlock 残差块数量，决定模型的深度
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class  MSGNet_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.d_model = 128 # 表示模型中间层的隐藏维度大小，控制着模型的表达能力和复杂度
+        self.d_ff = 256 # 前馈网络维度，表示前馈网络中的隐藏层维度 默认值为256（通常是d_model的2倍）
+        self.n_heads = 8 #  注意力头数，表示多头注意力机制中的头数 需要能够整除d_model，以确保每个头的维度是整数 默认8
+
+        self.top_k = 2 # 控制从FFT中提取的主要周期数量，决定多尺度图卷积的层数
+        self.c_out = enc_in
+        self.conv_channel = 32 # 卷积核数量
+        self.skip_channel = 32 # 跳层通道数
+        self.gcn_depth = 2 # 图卷积深度
+        self.propalpha = 0.3 #传播衰减因子
+        self.node_dim = 10 # 节点维度
+
+        self.e_layers = 5 # 多尺度图卷积块：融合图卷积和注意力机制的特征提取模块 默认为3
+            # 合理范围：1 - 5层
+            # 较浅的网络（1 - 2层）适合简单任务或者数据量较小的情况。
+            # 中等深度（3 - 5层）适合更复杂的任务和较大的数据集。
+            # 过深可能会导致过拟合，特别是在时间序列分类这种相对任务上。
+        #嵌入层参数：嵌入类型 timeF, fixed, learned
+        """
+            timeF：时间序列预测、时间特征编码
+            fixed：NLP中的位置编码、图结构编码
+            learned：文本分类、机器翻译、推荐系统等
+        """
+        self.embed = 'timeF'  # 嵌入类型 timeF, fixed, learned 默认：timeF
+        self.freq = 'd'  # 时间频率 [s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly]
+
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+
+class  TimeFilter_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.d_model = 128 # 表示模型中间层的隐藏维度大小，控制着模型的表达能力和复杂度
+        self.d_ff = 256 # 前馈网络维度，表示前馈网络中的隐藏层维度 默认值为256（通常是d_model的2倍）
+        self.patch_len = 8 # 时间序列被切分成的小段（patch）的长度。
+        self.pos = True #pos: 是否使用位置编码
+
+        self.n_heads = 8 # 注意力头数，表示多头注意力机制中的头数 需要能够整除d_model，以确保每个头的维度是整数 默认8
+        self.e_layers = 3 # 编码器层数，表示编码器中堆叠的层数 默认为3
+
+        self.alpha = 0.1 #控制邻接矩阵稀疏性的阈值比例，在mask_topk函数中用于保留一定比例的最大权重连接。
+        self.top_p = 0.5 #在MoE（Mixture of Experts）门控机制中使用的概率累积阈值，用于选择最重要的专家组合。
 
         self.dropout = 0.05 # dropout
         self.num_class = 2  # 分类数
