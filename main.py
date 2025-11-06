@@ -47,7 +47,9 @@ from TimeSeriesModels.Configs import *
 #from TimeSeriesModels.WPMixer import WPMixer
 #from TimeSeriesModels.FreTS import FreTS
 #from TimeSeriesModels.PAttn import PAttn
-from TimeSeriesModels.KANAD import KANAD
+#from TimeSeriesModels.KANAD import KANAD
+#from TimeSeriesModels.Reformer import Reformer
+from TimeSeriesModels.Pyraformer import Pyraformer
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
 import matplotlib.pyplot as plt
@@ -517,9 +519,17 @@ class PortfolioStrategy:
         # configs = PAttn_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = PAttn(configs)
 
-        # KANAD 模型调用
-        configs = KANAD_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = KANAD(configs)
+        # # KANAD 模型调用
+        # configs = KANAD_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = KANAD(configs)
+
+        # # Reformer模型调用
+        # configs = Reformer_configs(seq_len=nSeqLen,enc_in=featureNum)
+        # model = Reformer(configs)
+
+        # Pyraformer模型调用
+        configs = Pyraformer_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = Pyraformer(configs)
 
         model = model.to(self.device)
         #设置优化器

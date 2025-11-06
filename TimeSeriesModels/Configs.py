@@ -585,8 +585,60 @@ class  KANAD_configs:
         self.seq_len = seq_len # 输入序列长度
         self.enc_in = enc_in # 输入特征维度(特征数)
 
-        self.d_model = 32 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
+        self.d_model = 16 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
         #self.e_layers = 3 # 编码器层数，表示编码器中堆叠的层数 默认为3
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class  Reformer_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.n_heads = 8 #  注意力头数，表示多头注意力机制中的头数 需要能够整除d_model，以确保每个头的维度是整数 默认8
+        self.d_model = 128 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
+        self.d_ff = 256 # 前馈网络维度，表示前馈网络中的隐藏层维度 默认值为256（通常是d_model的2倍）
+        self.activation = 'gelu'# 激活函数类型，指定使用的激活函数 默认为gelu/relu
+        self.e_layers = 3 # 编码器层数，表示编码器中堆叠的层数 默认为3
+        #嵌入层参数：嵌入类型 timeF, fixed, learned
+        """
+            timeF：时间序列预测、时间特征编码
+            fixed：NLP中的位置编码、图结构编码
+            learned：文本分类、机器翻译、推荐系统等
+        """
+        self.embed = 'timeF'  # 嵌入类型 timeF, fixed, learned 默认：timeF
+        self.freq = 'd'  # 时间频率 [s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly]
+
+        self.dropout = 0.05 # dropout
+        self.num_class = 2  # 分类数
+
+class  Pyraformer_configs:
+    def __init__(self,seq_len,enc_in):
+        """
+        :param seq_len: 时间序列长度
+        :param enc_in: 特征数
+        """
+        self.seq_len = seq_len # 输入序列长度
+        self.enc_in = enc_in # 输入特征维度(特征数)
+
+        self.n_heads = 32 #  注意力头数，表示多头注意力机制中的头数 需要能够整除d_model，以确保每个头的维度是整数 默认8
+        self.d_model = 128 # 作为输入嵌入层（DataEmbedding）的输出维度决定Encoder中各层的特征维度 默认为128
+        self.d_ff = 256 # 前馈网络维度，表示前馈网络中的隐藏层维度 默认值为256（通常是d_model的2倍）
+        self.activation = 'gelu'# 激活函数类型，指定使用的激活函数 默认为gelu/relu
+        self.e_layers = 1 # 编码器层数，表示编码器中堆叠的层数 默认为3
+        #嵌入层参数：嵌入类型 timeF, fixed, learned
+        """
+            timeF：时间序列预测、时间特征编码
+            fixed：NLP中的位置编码、图结构编码
+            learned：文本分类、机器翻译、推荐系统等
+        """
+        self.embed = 'timeF'  # 嵌入类型 timeF, fixed, learned 默认：timeF
+        self.freq = 'd'  # 时间频率 [s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly]
 
         self.dropout = 0.05 # dropout
         self.num_class = 2  # 分类数
