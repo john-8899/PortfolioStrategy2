@@ -49,11 +49,7 @@ from TimeSeriesModels.Configs import *
 #from TimeSeriesModels.PAttn import PAttn
 #from TimeSeriesModels.KANAD import KANAD
 #from TimeSeriesModels.Reformer import Reformer
-#from TimeSeriesModels.Pyraformer import Pyraformer
-#from TimeSeriesModels.Crossformer import Crossformer
-#from TimeSeriesModels.TSMixer import TSMixer
-#from TimeSeriesModels.MSGNet import MSGNet
-from  TimeSeriesModels.TimeFilter import TimeFilter
+from TimeSeriesModels.Pyraformer import Pyraformer
 import matplotlib
 matplotlib.use('TkAgg')  # 替换当前后端
 import matplotlib.pyplot as plt
@@ -531,28 +527,11 @@ class PortfolioStrategy:
         # configs = Reformer_configs(seq_len=nSeqLen,enc_in=featureNum)
         # model = Reformer(configs)
 
-        # # Pyraformer模型调用
-        # configs = Pyraformer_configs(seq_len=nSeqLen,enc_in=featureNum)
-        # model = Pyraformer(configs)
-
-        # # Crossformer模型调用
-        # configs = Crossformer_configs(seq_len=nSeqLen,enc_in=featureNum)
-        # model = Crossformer(configs)
-
-        # # TSMixer模型调用
-        # configs = TSMixer_configs(seq_len=nSeqLen,enc_in=featureNum)
-        # model = TSMixer(configs)
-
-        # # MSGNet 模型调用
-        # configs = MSGNet_configs(seq_len=nSeqLen,enc_in=featureNum)
-        # model = MSGNet(configs)
-
-        # TimeFilter模型调用
-        configs = TimeFilter_configs(seq_len=nSeqLen,enc_in=featureNum)
-        model = TimeFilter(configs)
+        # Pyraformer模型调用
+        configs = Pyraformer_configs(seq_len=nSeqLen,enc_in=featureNum)
+        model = Pyraformer(configs)
 
         model = model.to(self.device)
-
         #设置优化器
         #weight_decay 正则化参数
         #model.optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
